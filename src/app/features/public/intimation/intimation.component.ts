@@ -13,34 +13,32 @@ import { ToastService } from '../../../core/services/toast.service';
   template: `
     <div class="wizard-page">
       <div class="wizard-container">
-        <!-- Compact 3-Stage Progress Timeline -->
-        <div class="csp-stepper compact-stepper">
-          <div class="csp-step-item active">
-            <div class="csp-step-circle">1</div>
-            <div class="csp-step-label">
-              <span class="step-num">Step 1 of 3</span>
-              <span class="step-name">Accident & Parties Data</span>
+        <!-- Symmetrical 3-Stage Progress Timeline with 3 Equal Columns -->
+        <div class="stepper-grid">
+          <div class="step-card active">
+            <div class="step-badge">1</div>
+            <div class="step-text-col">
+              <span class="step-kicker">Step 1 of 3</span>
+              <span class="step-title">Accident & Parties Data</span>
             </div>
-            <div class="csp-step-line"></div>
           </div>
-          <div class="csp-step-item">
-            <div class="csp-step-circle">2</div>
-            <div class="csp-step-label">
-              <span class="step-num">Step 2 of 3</span>
-              <span class="step-name">Document Upload</span>
+          <div class="step-card">
+            <div class="step-badge">2</div>
+            <div class="step-text-col">
+              <span class="step-kicker">Step 2 of 3</span>
+              <span class="step-title">Document Upload</span>
             </div>
-            <div class="csp-step-line"></div>
           </div>
-          <div class="csp-step-item">
-            <div class="csp-step-circle">3</div>
-            <div class="csp-step-label">
-              <span class="step-num">Step 3 of 3</span>
-              <span class="step-name">Review & Declaration</span>
+          <div class="step-card">
+            <div class="step-badge">3</div>
+            <div class="step-text-col">
+              <span class="step-kicker">Step 3 of 3</span>
+              <span class="step-title">Review & Declaration</span>
             </div>
           </div>
         </div>
 
-        <!-- Master Data Intake Card -->
+        <!-- Master Data Intake Card with Equal Grid Alignment -->
         <div class="csp-card intake-form-card">
           <div class="form-title-bar">
             <div class="form-title-left">
@@ -100,6 +98,7 @@ import { ToastService } from '../../../core/services/toast.service';
             <!-- Section 1B: Accident Circumstances & Police Records -->
             <div class="form-sec-divider">2. Incident Circumstances & Police Records</div>
             <div class="grid-4">
+              <!-- Row 1: 4 equal cols (1+1+1+1) -->
               <div class="csp-form-group">
                 <label class="csp-label">Accident Date <span class="required-dot">*</span></label>
                 <input 
@@ -145,9 +144,8 @@ import { ToastService } from '../../../core/services/toast.service';
                   [class.has-error]="isInvalid('accidentCity')"
                 />
               </div>
-            </div>
 
-            <div class="grid-4">
+              <!-- Row 2: 2 cols + 1 col + 1 col (2+1+1) -->
               <div class="csp-form-group col-span-2">
                 <label class="csp-label">Location Landmark / Street <span class="required-dot">*</span></label>
                 <input 
@@ -159,7 +157,7 @@ import { ToastService } from '../../../core/services/toast.service';
                 />
               </div>
 
-              <div class="csp-form-group">
+              <div class="csp-form-group col-span-1">
                 <label class="csp-label">Police Station (If Reported)</label>
                 <input 
                   type="text" 
@@ -169,7 +167,7 @@ import { ToastService } from '../../../core/services/toast.service';
                 />
               </div>
 
-              <div class="csp-form-group">
+              <div class="csp-form-group col-span-1">
                 <label class="csp-label">FIR / GD / DDR Number</label>
                 <input 
                   type="text" 
@@ -178,22 +176,24 @@ import { ToastService } from '../../../core/services/toast.service';
                   class="csp-input"
                 />
               </div>
-            </div>
 
-            <div class="csp-form-group" style="margin-bottom: 0.45rem;">
-              <label class="csp-label">Accident Brief Narrative <span class="required-dot">*</span></label>
-              <textarea 
-                formControlName="accidentDescription" 
-                rows="1" 
-                placeholder="Brief description of collision, vehicle movement, and impact facts..." 
-                class="csp-textarea"
-                [class.has-error]="isInvalid('accidentDescription')"
-              ></textarea>
+              <!-- Row 3: Full 4 cols -->
+              <div class="csp-form-group col-span-4">
+                <label class="csp-label">Accident Brief Narrative <span class="required-dot">*</span></label>
+                <input 
+                  type="text" 
+                  formControlName="accidentDescription" 
+                  placeholder="Brief description of collision, vehicle movement, and impact facts..." 
+                  class="csp-input"
+                  [class.has-error]="isInvalid('accidentDescription')"
+                />
+              </div>
             </div>
 
             <!-- Section 1C: Claimant Contact Particulars -->
             <div class="form-sec-divider">3. Claimant Contact Particulars</div>
             <div class="grid-4">
+              <!-- Row 1: 4 equal cols (1+1+1+1) -->
               <div class="csp-form-group">
                 <label class="csp-label">Full Name <span class="required-dot">*</span></label>
                 <input 
@@ -236,10 +236,9 @@ import { ToastService } from '../../../core/services/toast.service';
                   <option value="SMS">SMS Alerts Only</option>
                 </select>
               </div>
-            </div>
 
-            <div class="grid-4">
-              <div class="csp-form-group col-span-3">
+              <!-- Row 2: 2 cols + 2 cols (2+2) -->
+              <div class="csp-form-group col-span-2">
                 <label class="csp-label">Residential Address</label>
                 <input 
                   type="text" 
@@ -249,12 +248,12 @@ import { ToastService } from '../../../core/services/toast.service';
                 />
               </div>
 
-              <div class="csp-form-group">
-                <label class="csp-label">City / State</label>
+              <div class="csp-form-group col-span-2">
+                <label class="csp-label">City & State</label>
                 <input 
                   type="text" 
                   formControlName="claimantCity" 
-                  placeholder="e.g. Chennai" 
+                  placeholder="e.g. Chennai, Tamil Nadu" 
                   class="csp-input"
                 />
               </div>
@@ -263,6 +262,7 @@ import { ToastService } from '../../../core/services/toast.service';
             <!-- Section 1D: Involved Vehicle & Policy Details -->
             <div class="form-sec-divider">4. Involved Vehicle & Policy Details</div>
             <div class="grid-4">
+              <!-- Row 1: 4 equal cols (1+1+1+1) -->
               <div class="csp-form-group">
                 <label class="csp-label">Insured Vehicle Reg No <span class="required-dot">*</span></label>
                 <input 
@@ -306,9 +306,8 @@ import { ToastService } from '../../../core/services/toast.service';
                   class="csp-input"
                 />
               </div>
-            </div>
 
-            <div class="grid-4">
+              <!-- Row 2: 2 cols + 2 cols (2+2) -->
               <div class="csp-form-group col-span-2">
                 <label class="csp-label">Driver Name at Time of Accident</label>
                 <input 
@@ -362,88 +361,103 @@ import { ToastService } from '../../../core/services/toast.service';
     .wizard-container {
       max-width: 1060px;
       margin: 0 auto;
+      box-sizing: border-box;
+      width: 100%;
     }
 
-    /* 3-Stage Stepper */
-    .compact-stepper {
+    /* Symmetrical 3-Stage Progress Timeline with 3 Equal Columns */
+    .stepper-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 0.95rem;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .step-card {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      margin-bottom: 0.85rem;
-      position: relative;
+      gap: 0.65rem;
+      padding: 0.55rem 0.85rem;
+      background: var(--csp-white);
+      border: 1px solid var(--csp-border);
+      border-radius: var(--csp-radius-sm);
+      box-sizing: border-box;
+      transition: var(--csp-transition);
     }
-    .csp-step-item {
-      display: flex;
-      align-items: center;
-      gap: 0.55rem;
-      position: relative;
-      flex: 1;
+    .step-card.active {
+      border-color: var(--csp-ember);
+      background: #FFF9F6;
+      box-shadow: 0 1px 3px rgba(232, 93, 50, 0.12);
     }
-    .csp-step-item:last-child {
-      flex: 0 0 auto;
+    .step-card.completed {
+      border-color: rgba(85, 116, 95, 0.45);
+      background: #F6F9F7;
     }
-    .csp-step-circle {
-      width: 28px;
-      height: 28px;
+    .step-badge {
+      width: 26px;
+      height: 26px;
       border-radius: 50%;
       background: var(--csp-ivory);
-      border: 2px solid var(--csp-border);
+      border: 1.5px solid var(--csp-border);
       color: var(--csp-warm-grey);
       font-weight: 800;
-      font-size: 0.8rem;
+      font-size: 0.76rem;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      z-index: 2;
     }
-    .csp-step-item.active .csp-step-circle {
+    .step-card.active .step-badge {
       background: var(--csp-ember);
       border-color: var(--csp-ember);
       color: var(--csp-white);
-      box-shadow: 0 0 0 3px rgba(232, 93, 50, 0.2);
+      box-shadow: 0 0 0 2px rgba(232, 93, 50, 0.2);
     }
-    .csp-step-item.completed .csp-step-circle {
+    .step-card.completed .step-badge {
       background: var(--csp-sage);
       border-color: var(--csp-sage);
       color: var(--csp-white);
     }
-    .csp-step-label {
+    .step-text-col {
       display: flex;
       flex-direction: column;
+      overflow: hidden;
+      min-width: 0;
     }
-    .step-num {
+    .step-kicker {
       font-size: 0.65rem;
       text-transform: uppercase;
       font-weight: 700;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.04em;
       color: var(--csp-warm-grey);
+      line-height: 1.2;
     }
-    .step-name {
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: var(--csp-charcoal);
-    }
-    .csp-step-item.active .step-name {
+    .step-card.active .step-kicker {
       color: var(--csp-ember);
     }
-    .csp-step-line {
-      flex: 1;
-      height: 2px;
-      background: var(--csp-border);
-      margin: 0 0.75rem;
+    .step-card.completed .step-kicker {
+      color: var(--csp-sage);
     }
-    .csp-step-line.filled {
-      background: var(--csp-sage);
+    .step-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--csp-charcoal);
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    /* High-density Form Card */
+    /* High-density Form Card with Symmetrical Inner Padding */
     .intake-form-card {
-      padding: 1.15rem 1.4rem;
+      padding: 1.25rem 1.5rem;
       background: var(--csp-white);
       border-radius: var(--csp-radius-md);
       box-shadow: var(--csp-shadow-sm);
       border: 1px solid var(--csp-border);
+      box-sizing: border-box;
+      width: 100%;
     }
 
     .form-title-bar {
@@ -451,8 +465,10 @@ import { ToastService } from '../../../core/services/toast.service';
       justify-content: space-between;
       align-items: center;
       padding-bottom: 0.65rem;
-      margin-bottom: 0.65rem;
+      margin-bottom: 0.75rem;
       border-bottom: 1px solid var(--csp-border);
+      width: 100%;
+      box-sizing: border-box;
     }
     .form-title-left {
       display: flex;
@@ -478,26 +494,36 @@ import { ToastService } from '../../../core/services/toast.service';
       color: var(--csp-warm-grey);
     }
 
-    /* Clean Section Dividers */
+    /* Clean Uniform Section Dividers */
     .form-sec-divider {
-      font-size: 0.74rem;
+      font-size: 0.72rem;
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.05em;
       color: var(--csp-terracotta);
-      background: rgba(197, 106, 74, 0.08);
-      padding: 0.25rem 0.6rem;
+      background: rgba(197, 106, 74, 0.06);
+      padding: 0.3rem 0.65rem;
       border-radius: 4px;
       border-left: 3px solid var(--csp-ember);
-      margin: 0.55rem 0 0.45rem 0;
+      margin: 0.85rem 0 0.55rem 0;
+      box-sizing: border-box;
+      width: 100%;
+    }
+    .form-sec-divider:first-of-type {
+      margin-top: 0.2rem;
     }
 
-    /* Grids & Spans */
+    /* Symmetrical 4-Column Grids */
     .grid-4 {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 0.45rem 0.7rem;
-      margin-bottom: 0.4rem;
+      gap: 0.65rem 0.85rem;
+      margin-bottom: 0.55rem;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .col-span-1 {
+      grid-column: span 1;
     }
     .col-span-2 {
       grid-column: span 2;
@@ -512,42 +538,57 @@ import { ToastService } from '../../../core/services/toast.service';
     .csp-form-group {
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      width: 100%;
+      box-sizing: border-box;
     }
     .csp-label {
+      display: flex;
+      align-items: center;
+      height: 20px;
+      line-height: 20px;
       font-size: 0.73rem;
       font-weight: 700;
       color: var(--csp-charcoal);
-      margin-bottom: 1px;
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      box-sizing: border-box;
     }
     .required-dot {
       color: var(--csp-ember);
+      margin-left: 2px;
     }
 
     .csp-input, .csp-select {
-      height: 33px;
-      font-size: 0.81rem;
-      padding: 0.25rem 0.55rem;
-      border: 1px solid var(--csp-border);
-      border-radius: var(--csp-radius-sm);
-      background: var(--csp-white);
-      color: var(--csp-charcoal);
-      font-family: inherit;
-    }
-    .csp-textarea {
       height: 36px;
       min-height: 36px;
-      font-size: 0.81rem;
-      padding: 0.25rem 0.55rem;
+      max-height: 36px;
+      line-height: normal;
+      font-size: 0.82rem;
+      padding: 0 0.75rem;
       border: 1px solid var(--csp-border);
       border-radius: var(--csp-radius-sm);
-      background: var(--csp-white);
+      background-color: var(--csp-white);
       color: var(--csp-charcoal);
       font-family: inherit;
-      resize: vertical;
-    }
-    .csp-input:focus, .csp-select:focus, .csp-textarea:focus {
+      width: 100%;
+      box-sizing: border-box;
+      display: block;
       outline: none;
+      transition: var(--csp-transition);
+    }
+    .csp-select {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B6764' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      padding-right: 2rem;
+      cursor: pointer;
+    }
+    .csp-input:focus, .csp-select:focus {
       border-color: var(--csp-ember);
       box-shadow: 0 0 0 2px rgba(232, 93, 50, 0.15);
     }
@@ -565,30 +606,28 @@ import { ToastService } from '../../../core/services/toast.service';
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 0.75rem;
-      padding-top: 0.65rem;
+      margin-top: 1rem;
+      padding-top: 0.85rem;
       border-top: 1px solid var(--csp-border);
+      width: 100%;
+      box-sizing: border-box;
     }
     .actions-right {
       display: flex;
       align-items: center;
-      gap: 0.6rem;
+      gap: 0.75rem;
     }
 
-    @media (max-width: 820px) {
+    @media (max-width: 860px) {
       .grid-4 {
         grid-template-columns: repeat(2, 1fr);
       }
       .col-span-2, .col-span-3, .col-span-4 {
         grid-column: span 2;
       }
-      .compact-stepper {
-        flex-direction: column;
-        align-items: flex-start;
+      .stepper-grid {
+        grid-template-columns: 1fr;
         gap: 0.5rem;
-      }
-      .csp-step-line {
-        display: none;
       }
     }
 
@@ -596,7 +635,7 @@ import { ToastService } from '../../../core/services/toast.service';
       .grid-4 {
         grid-template-columns: 1fr;
       }
-      .col-span-2, .col-span-3, .col-span-4 {
+      .col-span-1, .col-span-2, .col-span-3, .col-span-4 {
         grid-column: span 1;
       }
       .form-actions-bar {
@@ -637,7 +676,7 @@ export class IntimationComponent implements OnInit {
       claimantPhone: [draft.claimantPhone || '+91 98410 44321', Validators.required],
       claimantEmail: [draft.claimantEmail || 'kavitha.ram@example.com', [Validators.required, Validators.email]],
       claimantAddress: [draft.claimantAddress || '42/1, Oliver Road, Mylapore'],
-      claimantCity: [draft.claimantCity || 'Chennai'],
+      claimantCity: [draft.claimantCity || 'Chennai, Tamil Nadu'],
       contactPreference: [draft.contactPreference || 'Phone'],
       insuredVehicleNumber: [draft.insuredVehicleNumber || 'TN 07 CQ 8819', Validators.required],
       vehicleType: [draft.vehicleType || 'Private Motor Car', Validators.required],

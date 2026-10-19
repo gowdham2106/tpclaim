@@ -14,29 +14,27 @@ import { ToastService } from '../../../core/services/toast.service';
   template: `
     <div class="wizard-page">
       <div class="wizard-container">
-        <!-- Compact 3-Stage Progress Timeline -->
-        <div class="csp-stepper compact-stepper">
-          <div class="csp-step-item completed">
-            <div class="csp-step-circle">✓</div>
-            <div class="csp-step-label">
-              <span class="step-num">Step 1 of 3</span>
-              <span class="step-name">Accident & Parties Data</span>
+        <!-- Symmetrical 3-Stage Progress Timeline with 3 Equal Columns -->
+        <div class="stepper-grid">
+          <div class="step-card completed">
+            <div class="step-badge">✓</div>
+            <div class="step-text-col">
+              <span class="step-kicker">Step 1 of 3</span>
+              <span class="step-title">Accident & Parties Data</span>
             </div>
-            <div class="csp-step-line filled"></div>
           </div>
-          <div class="csp-step-item completed">
-            <div class="csp-step-circle">✓</div>
-            <div class="csp-step-label">
-              <span class="step-num">Step 2 of 3</span>
-              <span class="step-name">Document Upload</span>
+          <div class="step-card completed">
+            <div class="step-badge">✓</div>
+            <div class="step-text-col">
+              <span class="step-kicker">Step 2 of 3</span>
+              <span class="step-title">Document Upload</span>
             </div>
-            <div class="csp-step-line filled"></div>
           </div>
-          <div class="csp-step-item active">
-            <div class="csp-step-circle">3</div>
-            <div class="csp-step-label">
-              <span class="step-num">Step 3 of 3</span>
-              <span class="step-name">Review & Declaration</span>
+          <div class="step-card active">
+            <div class="step-badge">3</div>
+            <div class="step-text-col">
+              <span class="step-kicker">Step 3 of 3</span>
+              <span class="step-title">Review & Declaration</span>
             </div>
           </div>
         </div>
@@ -267,77 +265,88 @@ import { ToastService } from '../../../core/services/toast.service';
       margin: 0 auto;
     }
 
-    /* 3-Stage Stepper */
-    .compact-stepper {
+    /* Symmetrical 3-Stage Progress Timeline with 3 Equal Columns */
+    .stepper-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 0.95rem;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .step-card {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      margin-bottom: 0.85rem;
-      position: relative;
+      gap: 0.65rem;
+      padding: 0.55rem 0.85rem;
+      background: var(--csp-white);
+      border: 1px solid var(--csp-border);
+      border-radius: var(--csp-radius-sm);
+      box-sizing: border-box;
+      transition: var(--csp-transition);
     }
-    .csp-step-item {
-      display: flex;
-      align-items: center;
-      gap: 0.55rem;
-      position: relative;
-      flex: 1;
+    .step-card.active {
+      border-color: var(--csp-ember);
+      background: #FFF9F6;
+      box-shadow: 0 1px 3px rgba(232, 93, 50, 0.12);
     }
-    .csp-step-item:last-child {
-      flex: 0 0 auto;
+    .step-card.completed {
+      border-color: rgba(85, 116, 95, 0.45);
+      background: #F6F9F7;
     }
-    .csp-step-circle {
-      width: 28px;
-      height: 28px;
+    .step-badge {
+      width: 26px;
+      height: 26px;
       border-radius: 50%;
       background: var(--csp-ivory);
-      border: 2px solid var(--csp-border);
+      border: 1.5px solid var(--csp-border);
       color: var(--csp-warm-grey);
       font-weight: 800;
-      font-size: 0.8rem;
+      font-size: 0.76rem;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      z-index: 2;
     }
-    .csp-step-item.active .csp-step-circle {
+    .step-card.active .step-badge {
       background: var(--csp-ember);
       border-color: var(--csp-ember);
       color: var(--csp-white);
-      box-shadow: 0 0 0 3px rgba(232, 93, 50, 0.2);
+      box-shadow: 0 0 0 2px rgba(232, 93, 50, 0.2);
     }
-    .csp-step-item.completed .csp-step-circle {
+    .step-card.completed .step-badge {
       background: var(--csp-sage);
       border-color: var(--csp-sage);
       color: var(--csp-white);
     }
-    .csp-step-label {
+    .step-text-col {
       display: flex;
       flex-direction: column;
+      overflow: hidden;
+      min-width: 0;
     }
-    .step-num {
+    .step-kicker {
       font-size: 0.65rem;
       text-transform: uppercase;
       font-weight: 700;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.04em;
       color: var(--csp-warm-grey);
+      line-height: 1.2;
     }
-    .step-name {
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: var(--csp-charcoal);
-    }
-    .csp-step-item.active .step-name {
+    .step-card.active .step-kicker {
       color: var(--csp-ember);
     }
-    .csp-step-line {
-      flex: 1;
-      height: 2px;
-      background: var(--csp-border);
-      margin: 0 0.75rem;
+    .step-card.completed .step-kicker {
+      color: var(--csp-sage);
     }
-    .csp-step-line.filled {
-      background: var(--csp-sage);
+    .step-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--csp-charcoal);
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .compact-wizard-card {
@@ -541,13 +550,9 @@ import { ToastService } from '../../../core/services/toast.service';
       .review-grid-2 {
         grid-template-columns: 1fr;
       }
-      .compact-stepper {
-        flex-direction: column;
-        align-items: flex-start;
+      .stepper-grid {
+        grid-template-columns: 1fr;
         gap: 0.5rem;
-      }
-      .csp-step-line {
-        display: none;
       }
       .wizard-footer {
         flex-direction: column;
