@@ -1,8 +1,9 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, ActivatedRoute, Router } from '@angular/router';
+import { RouterModule, ActivatedRoute } from '@angular/router';
 import { IconComponent } from '../../../shared/components/icon/icon.component';
 import { MockDataService } from '../../../core/services/mock-data.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-acknowledgement',
@@ -11,29 +12,27 @@ import { MockDataService } from '../../../core/services/mock-data.service';
   template: `
     <div class="ack-page">
       <div class="ack-container">
-        <!-- Compact 3-Stage Progress Timeline (All Completed) -->
-        <div class="csp-stepper compact-stepper">
-          <div class="csp-step-item completed">
-            <div class="csp-step-circle">✓</div>
-            <div class="csp-step-label">
-              <span class="step-num">Step 1 of 3</span>
-              <span class="step-name">Accident & Parties Data</span>
+        <!-- Symmetrical 3-Stage Progress Timeline (All 3 Completed) -->
+        <div class="stepper-grid">
+          <div class="step-card completed">
+            <div class="step-badge">✓</div>
+            <div class="step-text-col">
+              <span class="step-kicker">Step 1 of 3</span>
+              <span class="step-title">Accident & Parties Data</span>
             </div>
-            <div class="csp-step-line filled"></div>
           </div>
-          <div class="csp-step-item completed">
-            <div class="csp-step-circle">✓</div>
-            <div class="csp-step-label">
-              <span class="step-num">Step 2 of 3</span>
-              <span class="step-name">Document Upload</span>
+          <div class="step-card completed">
+            <div class="step-badge">✓</div>
+            <div class="step-text-col">
+              <span class="step-kicker">Step 2 of 3</span>
+              <span class="step-title">Document Upload</span>
             </div>
-            <div class="csp-step-line filled"></div>
           </div>
-          <div class="csp-step-item completed">
-            <div class="csp-step-circle">✓</div>
-            <div class="csp-step-label">
-              <span class="step-num">Step 3 of 3</span>
-              <span class="step-name">Review & Declaration</span>
+          <div class="step-card completed">
+            <div class="step-badge">✓</div>
+            <div class="step-text-col">
+              <span class="step-kicker">Step 3 of 3</span>
+              <span class="step-title">Review & Declaration</span>
             </div>
           </div>
         </div>
@@ -41,86 +40,104 @@ import { MockDataService } from '../../../core/services/mock-data.service';
         <div class="csp-card ack-card">
           <!-- Step 4 Pill -->
           <div class="step-4-badge">
-            <span class="step-pill">Step 4: Confirmation & Receipt</span>
+            <span class="step-pill">Stage 4: Intake Confirmed & Registered</span>
           </div>
 
-          <!-- Success Graphic Badge -->
+          <!-- Success Icon Graphic -->
           <div class="ack-badge-box">
-            <app-icon name="check" [size]="36" class="check-icon"></app-icon>
+            <app-icon name="check" [size]="32" class="check-icon"></app-icon>
           </div>
 
-          <h1 class="ack-title">Accident Intimation Received</h1>
+          <h1 class="ack-title">Accident Intimation Confirmed</h1>
           <p class="ack-subtitle">
-            Your third-party motor accident report has been officially registered in the ClaimShield Plus intake portal.
+            Your third-party motor insurance intimation has been officially recorded in the ClaimShield Plus claims registry.
           </p>
 
           <!-- Reference Number Highlight Box -->
           <div class="reference-banner">
-            <div class="ref-label">Your Intimation Reference Number</div>
-            <div class="ref-number">{{ intimationRef }}</div>
+            <div class="ref-label">Official Intimation Reference Number</div>
+            <div class="ref-number-row">
+              <span class="ref-number">{{ intimationRef }}</span>
+              <button type="button" (click)="copyReference()" class="copy-btn" title="Copy Reference to Clipboard">
+                <app-icon [name]="isCopied ? 'check' : 'copy'" [size]="14"></app-icon>
+                <span>{{ isCopied ? 'Copied' : 'Copy' }}</span>
+              </button>
+            </div>
             <div class="ref-meta">
-              <span>Submitted: {{ submissionTimestamp }}</span>
+              <span class="meta-item">
+                <app-icon name="calendar" [size]="13"></app-icon>
+                <span>Submitted: {{ submissionTimestamp }}</span>
+              </span>
               <span class="meta-dot">•</span>
-              <span>Intake Hub: South Zonal TP Operations</span>
+              <span class="meta-item">
+                <app-icon name="map-pin" [size]="13"></app-icon>
+                <span>Intake Hub: South Zonal TP Operations</span>
+              </span>
+              <span class="meta-dot">•</span>
+              <span class="meta-item">
+                <app-icon name="clock" [size]="13"></app-icon>
+                <span>Initial Verification SLA: 24–48h</span>
+              </span>
             </div>
           </div>
 
-          <!-- Important Disclaimer Alert Box -->
+          <!-- Important Statutory Legal Notice Box -->
           <div class="legal-notice-box">
-            <app-icon name="alert-circle" [size]="20" class="alert-icon"></app-icon>
+            <app-icon name="alert-circle" [size]="18" class="alert-icon"></app-icon>
             <div class="notice-text">
               <strong>Notice of Statutory Non-Admission:</strong>
-              Submission of this intimation creates an official inquiry file and does not constitute acceptance of liability, approval of claim, or a guarantee of financial compensation. Entitlement is subject to policy verification, evidence review, and statutory motor accident tribunal guidelines.
+              Submission of this intimation creates an official inquiry file and does not constitute acceptance of liability, approval of claim, or a guarantee of financial compensation. Final settlement is determined following policy validation, field investigation, and motor accident claims tribunal guidelines.
             </div>
           </div>
 
-          <!-- What Happens Next? Timeline Cards -->
+          <!-- What Happens Next: 3 Equal Symmetrical Columns -->
           <div class="next-steps-section">
-            <h3 class="steps-heading">What Happens Next?</h3>
-            <div class="steps-grid">
-              <div class="step-card">
-                <div class="step-circle">1</div>
-                <div class="step-card-content">
-                  <h4 class="step-card-title">Policy & FIR Verification</h4>
-                  <p class="step-card-desc">
-                    Our intake officers verify insurance cover on Parivahan Sarathi and authenticate FIR particulars (within 24-48 business hours).
+            <h3 class="steps-heading">What Happens Next in the Claims Workflow?</h3>
+            <div class="next-steps-grid">
+              <div class="next-step-card">
+                <div class="step-circle-badge">1</div>
+                <div class="next-step-content">
+                  <h4 class="next-step-title">Policy & FIR Verification</h4>
+                  <p class="next-step-desc">
+                    Intake officers authenticate insurance cover on Parivahan Sarathi and cross-verify police FIR details within 24–48 business hours.
                   </p>
                 </div>
               </div>
 
-              <div class="step-card">
-                <div class="step-circle">2</div>
-                <div class="step-card-content">
-                  <h4 class="step-card-title">Handler Assignment & Claim ID</h4>
-                  <p class="step-card-desc">
-                    A dedicated claims handler is assigned and converts this intimation into an active claim file (e.g. TP-2026-XXXXXX).
+              <div class="next-step-card">
+                <div class="step-circle-badge">2</div>
+                <div class="next-step-content">
+                  <h4 class="next-step-title">Claims Handler & Official ID</h4>
+                  <p class="next-step-desc">
+                    A dedicated claims handler is assigned and converts this intimation into a registered claim file (e.g. TP-2026-XXXXXX).
                   </p>
                 </div>
               </div>
 
-              <div class="step-card">
-                <div class="step-circle">3</div>
-                <div class="step-card-content">
-                  <h4 class="step-card-title">Evidence Review & Direct Assessment</h4>
-                  <p class="step-card-desc">
-                    Medical bills, loss of income records, or property repair estimates are reviewed for fair settlement or tribunal representation.
+              <div class="next-step-card">
+                <div class="step-circle-badge">3</div>
+                <div class="next-step-content">
+                  <h4 class="next-step-title">Evidence Review & Settlement</h4>
+                  <p class="next-step-desc">
+                    Submitted evidence and medical records are reviewed for direct out-of-court settlement or MACT tribunal representation.
                   </p>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Action Buttons -->
+          <!-- Symmetrical Action Buttons -->
           <div class="ack-actions">
-            <a [routerLink]="['/public/track-claim']" [queryParams]="{ ref: intimationRef }" class="csp-btn csp-btn-primary csp-btn-lg">
-              <app-icon name="search" [size]="16"></app-icon>
-              <span>Track this Claim</span>
+            <a [routerLink]="['/public/track-claim']" [queryParams]="{ ref: intimationRef }" class="csp-btn csp-btn-primary">
+              <app-icon name="search" [size]="15"></app-icon>
+              <span>Track Claim Status</span>
             </a>
-            <a [routerLink]="['/public/claim-details', intimationRef]" class="csp-btn csp-btn-secondary csp-btn-lg">
-              <app-icon name="eye" [size]="16"></app-icon>
+            <a [routerLink]="['/public/claim-details', intimationRef]" class="csp-btn csp-btn-secondary">
+              <app-icon name="eye" [size]="15"></app-icon>
               <span>View Submitted Summary</span>
             </a>
-            <a routerLink="/" class="csp-btn csp-btn-secondary csp-btn-lg">
+            <a routerLink="/" class="csp-btn csp-btn-secondary">
+              <app-icon name="home" [size]="15"></app-icon>
               <span>Return to Home</span>
             </a>
           </div>
@@ -130,96 +147,82 @@ import { MockDataService } from '../../../core/services/mock-data.service';
   `,
   styles: [`
     .ack-page {
-      padding: 2.5rem 1rem 4.5rem;
+      padding: 1.25rem 0.75rem 2.5rem;
       background: var(--csp-bg-soft);
-      min-height: calc(100vh - 200px);
+      min-height: calc(100vh - 180px);
     }
 
     .ack-container {
-      max-width: 860px;
+      max-width: 1060px;
       margin: 0 auto;
+      width: 100%;
+      box-sizing: border-box;
     }
 
-    /* 3-Stage Stepper */
-    .compact-stepper {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
-      position: relative;
+    /* Symmetrical 3-Stage Progress Timeline with 3 Equal Columns */
+    .stepper-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 0.95rem;
+      width: 100%;
+      box-sizing: border-box;
     }
-    .csp-step-item {
+    .step-card {
       display: flex;
       align-items: center;
       gap: 0.65rem;
-      position: relative;
-      flex: 1;
+      padding: 0.55rem 0.85rem;
+      background: var(--csp-white);
+      border: 1px solid var(--csp-border);
+      border-radius: var(--csp-radius-sm);
+      box-sizing: border-box;
+      transition: var(--csp-transition);
     }
-    .csp-step-item:last-child {
-      flex: 0 0 auto;
+    .step-card.completed {
+      border-color: rgba(85, 116, 95, 0.45);
+      background: #F6F9F7;
     }
-    .csp-step-circle {
-      width: 32px;
-      height: 32px;
+    .step-badge {
+      width: 26px;
+      height: 26px;
       border-radius: 50%;
-      background: var(--csp-ivory);
-      border: 2px solid var(--csp-border);
-      color: var(--csp-warm-grey);
+      background: var(--csp-sage);
+      border: 1.5px solid var(--csp-sage);
+      color: var(--csp-white);
       font-weight: 800;
-      font-size: 0.85rem;
+      font-size: 0.76rem;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      z-index: 2;
     }
-    .csp-step-item.completed .csp-step-circle {
-      background: var(--csp-sage);
-      border-color: var(--csp-sage);
-      color: var(--csp-white);
-    }
-    .csp-step-label {
+    .step-text-col {
       display: flex;
       flex-direction: column;
+      overflow: hidden;
+      min-width: 0;
     }
-    .step-num {
-      font-size: 0.68rem;
+    .step-kicker {
+      font-size: 0.65rem;
       text-transform: uppercase;
       font-weight: 700;
-      letter-spacing: 0.05em;
-      color: var(--csp-warm-grey);
+      letter-spacing: 0.04em;
+      color: var(--csp-sage);
+      line-height: 1.2;
     }
-    .step-name {
-      font-size: 0.84rem;
-      font-weight: 700;
-      color: var(--csp-charcoal);
-    }
-    .csp-step-line {
-      flex: 1;
-      height: 2px;
-      background: var(--csp-border);
-      margin: 0 0.85rem;
-    }
-    .csp-step-line.filled {
-      background: var(--csp-sage);
-    }
-
-    .step-4-badge {
-      margin-bottom: 1.25rem;
-    }
-    .step-pill {
+    .step-title {
       font-size: 0.78rem;
       font-weight: 700;
-      color: var(--csp-sage);
-      background: rgba(85, 116, 95, 0.12);
-      padding: 3px 12px;
-      border-radius: var(--csp-radius-pill);
-      display: inline-block;
-      border: 1px solid rgba(85, 116, 95, 0.25);
+      color: var(--csp-charcoal);
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .ack-card {
-      padding: 2.75rem 2.5rem;
+      padding: 2rem 2.25rem 2.25rem;
       text-align: center;
       display: flex;
       flex-direction: column;
@@ -228,21 +231,36 @@ import { MockDataService } from '../../../core/services/mock-data.service';
       border-radius: var(--csp-radius-md);
       box-shadow: var(--csp-shadow-sm);
       border: 1px solid var(--csp-border);
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .step-4-badge {
+      margin-bottom: 0.85rem;
+    }
+    .step-pill {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--csp-sage);
+      background: rgba(85, 116, 95, 0.12);
+      padding: 3px 10px;
+      border-radius: var(--csp-radius-pill);
+      display: inline-block;
+      border: 1px solid rgba(85, 116, 95, 0.25);
     }
 
     .ack-badge-box {
-      width: 72px;
-      height: 72px;
+      width: 58px;
+      height: 58px;
       border-radius: 50%;
       background: var(--csp-sage-subtle);
-      border: 3px solid var(--csp-sage);
+      border: 2.5px solid var(--csp-sage);
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
       animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
-
     .check-icon {
       color: var(--csp-sage);
     }
@@ -253,159 +271,237 @@ import { MockDataService } from '../../../core/services/mock-data.service';
     }
 
     .ack-title {
-      font-size: 2.1rem;
+      font-size: 1.6rem;
       font-weight: 800;
       color: var(--csp-charcoal);
-      margin-bottom: 0.6rem;
+      margin: 0 0 0.4rem 0;
     }
 
     .ack-subtitle {
       color: var(--csp-warm-grey);
-      font-size: 1rem;
-      max-width: 580px;
-      line-height: 1.6;
-      margin-bottom: 2rem;
+      font-size: 0.88rem;
+      max-width: 620px;
+      line-height: 1.5;
+      margin: 0 0 1.35rem 0;
     }
 
+    /* Reference Number Banner with Symmetrical Box-Sizing */
     .reference-banner {
       width: 100%;
+      box-sizing: border-box;
       background: var(--csp-ivory);
-      border: 2px dashed var(--csp-clay-dark);
-      border-radius: var(--csp-radius-md);
-      padding: 1.5rem;
-      margin-bottom: 2rem;
+      border: 1.5px dashed var(--csp-clay-dark);
+      border-radius: var(--csp-radius-sm);
+      padding: 1.15rem 1.5rem;
+      margin-bottom: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     .ref-label {
-      font-size: 0.8rem;
+      font-size: 0.72rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.05em;
       color: var(--csp-warm-grey);
       margin-bottom: 0.35rem;
     }
 
+    .ref-number-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+    }
+
     .ref-number {
       font-family: var(--csp-font-heading);
-      font-size: 2rem;
+      font-size: 1.85rem;
       font-weight: 800;
       color: var(--csp-ember);
-      letter-spacing: 0.03em;
+      letter-spacing: 0.04em;
+      line-height: 1.2;
+    }
+
+    .copy-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.25rem 0.6rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--csp-charcoal);
+      background: var(--csp-white);
+      border: 1px solid var(--csp-border);
+      border-radius: var(--csp-radius-pill);
+      cursor: pointer;
+      transition: var(--csp-transition);
+    }
+    .copy-btn:hover {
+      border-color: var(--csp-ember);
+      color: var(--csp-ember);
+      background: rgba(232, 93, 50, 0.06);
     }
 
     .ref-meta {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 0.6rem;
-      font-size: 0.82rem;
+      gap: 0.65rem;
+      font-size: 0.76rem;
       color: var(--csp-warm-grey);
-      margin-top: 0.4rem;
+      margin-top: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .meta-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .meta-dot {
+      color: var(--csp-border-dark);
     }
 
+    /* Legal Notice Box */
     .legal-notice-box {
+      width: 100%;
+      box-sizing: border-box;
       display: flex;
       align-items: flex-start;
-      gap: 0.85rem;
+      gap: 0.75rem;
       background: var(--csp-white);
       border: 1px solid var(--csp-border);
-      border-radius: var(--csp-radius-md);
-      padding: 1.25rem;
+      border-radius: var(--csp-radius-sm);
+      padding: 0.85rem 1.1rem;
       text-align: left;
-      margin-bottom: 2.5rem;
+      margin-bottom: 1.35rem;
       box-shadow: var(--csp-shadow-sm);
     }
-
     .alert-icon {
       color: var(--csp-terracotta);
       flex-shrink: 0;
       margin-top: 2px;
     }
-
     .notice-text {
-      font-size: 0.84rem;
-      line-height: 1.6;
+      font-size: 0.78rem;
+      line-height: 1.5;
       color: var(--csp-warm-grey);
     }
 
+    /* What Happens Next: 3 Equal Columns */
+    .next-steps-section {
+      width: 100%;
+      box-sizing: border-box;
+      text-align: left;
+      margin-bottom: 1.5rem;
+    }
     .steps-heading {
-      font-size: 1.15rem;
+      font-size: 0.92rem;
       font-weight: 700;
       color: var(--csp-charcoal);
-      margin-bottom: 1.25rem;
+      margin: 0 0 0.65rem 0;
       text-align: left;
     }
-
-    .steps-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
+    .next-steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
       width: 100%;
-      text-align: left;
-      margin-bottom: 2.5rem;
+      box-sizing: border-box;
     }
-
-    .step-card {
+    .next-step-card {
       display: flex;
       align-items: flex-start;
-      gap: 1rem;
+      gap: 0.65rem;
       background: var(--csp-bg-soft);
       border: 1px solid var(--csp-border);
       border-radius: var(--csp-radius-sm);
-      padding: 1rem 1.25rem;
+      padding: 0.75rem 0.85rem;
+      box-sizing: border-box;
     }
-
-    .step-circle {
-      width: 28px;
-      height: 28px;
+    .step-circle-badge {
+      width: 24px;
+      height: 24px;
       border-radius: 50%;
       background: var(--csp-charcoal);
       color: var(--csp-white);
       font-weight: 700;
-      font-size: 0.82rem;
+      font-size: 0.74rem;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
+      margin-top: 1px;
     }
-
-    .step-card-title {
-      font-size: 0.95rem;
+    .next-step-content {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    .next-step-title {
+      font-size: 0.82rem;
       font-weight: 700;
       color: var(--csp-charcoal);
-      margin: 0 0 0.25rem;
+      margin: 0 0 0.2rem 0;
     }
-
-    .step-card-desc {
-      font-size: 0.85rem;
+    .next-step-desc {
+      font-size: 0.74rem;
       color: var(--csp-warm-grey);
       margin: 0;
-      line-height: 1.5;
+      line-height: 1.4;
     }
 
+    /* Action Buttons */
     .ack-actions {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 1rem;
+      gap: 0.75rem;
       flex-wrap: wrap;
       width: 100%;
+      box-sizing: border-box;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--csp-border);
+    }
+    .ack-actions .csp-btn {
+      height: 36px;
+      padding: 0 1rem;
+      font-size: 0.82rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      box-sizing: border-box;
+    }
+
+    @media (max-width: 860px) {
+      .stepper-grid {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+      }
+      .next-steps-grid {
+        grid-template-columns: 1fr;
+        gap: 0.6rem;
+      }
     }
 
     @media (max-width: 600px) {
-      .ack-card { padding: 1.75rem 1.25rem; }
-      .ref-number { font-size: 1.6rem; }
+      .ack-card { padding: 1.25rem 1rem; }
+      .ref-number { font-size: 1.45rem; }
       .ack-actions { flex-direction: column; }
-      .ack-actions a { width: 100%; }
+      .ack-actions .csp-btn { width: 100%; justify-content: center; }
     }
   `]
 })
 export class AcknowledgementComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private mockData = inject(MockDataService);
+  private toast = inject(ToastService);
 
   intimationRef = 'INT-2026-000184';
   submissionTimestamp = new Date().toISOString().replace('T', ' ').substring(0, 16);
+  isCopied = false;
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
@@ -413,5 +509,14 @@ export class AcknowledgementComponent implements OnInit {
         this.intimationRef = params['ref'];
       }
     });
+  }
+
+  copyReference() {
+    navigator.clipboard.writeText(this.intimationRef);
+    this.isCopied = true;
+    this.toast.showSuccess('Copied to Clipboard', `Reference ${this.intimationRef} has been copied.`);
+    setTimeout(() => {
+      this.isCopied = false;
+    }, 2500);
   }
 }

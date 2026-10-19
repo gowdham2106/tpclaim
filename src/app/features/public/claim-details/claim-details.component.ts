@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { IconComponent } from '../../../shared/components/icon/icon.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
-import { PriorityBadgeComponent } from '../../../shared/components/priority-badge/priority-badge.component';
 import { MockDataService } from '../../../core/services/mock-data.service';
 import { ClaimRecord } from '../../../core/models/claim.model';
 
@@ -12,7 +11,7 @@ type DetailTab = 'overview' | 'progress' | 'documents' | 'requests' | 'communica
 @Component({
   selector: 'app-claim-details',
   standalone: true,
-  imports: [CommonModule, RouterModule, IconComponent, StatusBadgeComponent, PriorityBadgeComponent],
+  imports: [CommonModule, RouterModule, IconComponent, StatusBadgeComponent],
   template: `
     <div class="claim-details-page">
       <div class="details-container">
