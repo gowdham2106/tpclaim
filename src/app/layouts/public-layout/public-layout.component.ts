@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { IconComponent } from '../../shared/components/icon/icon.component';
@@ -38,6 +38,9 @@ import { ToastService } from '../../core/services/toast.service';
               Staff Portal
             </a>
           </nav>
+
+          <!-- Backdrop for mobile menu -->
+          <div class="public-mobile-backdrop" *ngIf="isMobileMenuOpen" (click)="closeMobileMenu()"></div>
 
           <!-- Mobile Menu Toggle Button -->
           <button class="mobile-toggle" (click)="toggleMobileMenu()" aria-label="Toggle navigation">
@@ -375,6 +378,14 @@ import { ToastService } from '../../core/services/toast.service';
         display: flex;
       }
 
+      .public-mobile-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(37, 35, 33, 0.4);
+        backdrop-filter: blur(2px);
+        z-index: 95;
+      }
+
       .footer-grid {
         grid-template-columns: 1fr;
       }
@@ -385,6 +396,11 @@ export class PublicLayoutComponent {
   isMobileMenuOpen = false;
   private mockDataService = inject(MockDataService);
   private toastService = inject(ToastService);
+
+  @HostListener('window:keydown.escape')
+  onEscapeKey() {
+    this.closeMobileMenu();
+  }
 
   toggleMobileMenu() {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;

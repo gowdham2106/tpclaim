@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -48,8 +48,11 @@ interface NavGroup {
               <span class="brand-badge">PLUS OPS</span>
             </div>
           </a>
-          <button class="collapse-toggle" (click)="toggleSidebarCollapse()" title="Toggle Sidebar">
+          <button class="collapse-toggle desktop-toggle" (click)="toggleSidebarCollapse()" [title]="isSidebarCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'">
             <app-icon [name]="isSidebarCollapsed ? 'chevron-right' : 'arrow-left'" [size]="16"></app-icon>
+          </button>
+          <button class="collapse-toggle mobile-close" (click)="closeMobileSidebar()" title="Close Navigation Drawer">
+            <app-icon name="x" [size]="18"></app-icon>
           </button>
         </div>
 
@@ -61,13 +64,14 @@ interface NavGroup {
               <app-icon [name]="group.isExpanded ? 'chevron-up' : 'chevron-down'" [size]="13"></app-icon>
             </button>
 
-            <div class="group-items" *ngIf="group.isExpanded">
+            <div class="group-items" *ngIf="group.isExpanded || isSidebarCollapsed">
               <a 
                 *ngFor="let item of group.items" 
                 [routerLink]="item.route" 
                 routerLinkActive="active" 
                 [routerLinkActiveOptions]="{exact: item.route === '/ops/dashboard'}"
                 class="nav-item-link"
+                [title]="item.label"
                 (click)="closeMobileSidebar()"
               >
                 <app-icon [name]="item.icon" [size]="16" class="nav-item-icon"></app-icon>
@@ -78,11 +82,12 @@ interface NavGroup {
           </div>
 
           <!-- Direct Claim 360 Workspace Link -->
-          <div class="nav-group" style="margin-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 0.75rem;">
+          <div class="nav-group workspace-group" style="margin-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 0.75rem;">
             <a 
               routerLink="/ops/claim-360/TP-2026-001842" 
               routerLinkActive="active" 
               class="nav-item-link workspace-link"
+              title="Claim 360 Workspace"
               (click)="closeMobileSidebar()"
             >
               <app-icon name="layers" [size]="16" class="nav-item-icon"></app-icon>
@@ -93,7 +98,7 @@ interface NavGroup {
 
         <!-- Sidebar Footer / Demo Role Indicator -->
         <div class="sidebar-footer">
-          <div class="user-chip">
+          <div class="user-chip" [title]="mockData.currentUser().name + ' (' + mockData.currentUser().role + ')'">
             <div class="user-avatar">{{ mockData.currentUser().avatarInitials }}</div>
             <div class="user-info">
               <div class="user-name">{{ mockData.currentUser().name }}</div>
@@ -111,7 +116,7 @@ interface NavGroup {
         <!-- Top Navigation Bar -->
         <header class="staff-topbar">
           <div class="topbar-left">
-            <button class="mobile-menu-btn" (click)="toggleMobileSidebar()">
+            <button class="sidebar-toggle-btn" (click)="onToggleSidebar()" [title]="isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'">
               <app-icon name="menu" [size]="20"></app-icon>
             </button>
 
@@ -282,17 +287,30 @@ interface NavGroup {
     }
 
     .collapse-toggle {
-      background: none;
-      border: none;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--csp-radius-sm);
       color: var(--csp-warm-grey-light);
       cursor: pointer;
-      padding: 4px;
+      width: 28px;
+      height: 28px;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: color 0.15s;
+      transition: all 0.15s;
+      flex-shrink: 0;
     }
-    .collapse-toggle:hover { color: var(--csp-white); }
+    .collapse-toggle:hover {
+      background: rgba(255, 255, 255, 0.18);
+      color: var(--csp-white);
+    }
+
+    .collapse-toggle.mobile-close {
+      display: none;
+    }
+    .collapse-toggle.desktop-toggle {
+      display: flex;
+    }
 
     .sidebar-scroll {
       flex: 1;
@@ -481,13 +499,24 @@ interface NavGroup {
       max-width: 520px;
     }
 
-    .mobile-menu-btn {
-      display: none;
+    .sidebar-toggle-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
       background: none;
-      border: none;
+      border: 1px solid var(--csp-border);
+      border-radius: var(--csp-radius-sm);
+      width: 36px;
+      height: 36px;
       color: var(--csp-charcoal);
       cursor: pointer;
-      padding: 6px;
+      transition: var(--csp-transition);
+      flex-shrink: 0;
+    }
+    .sidebar-toggle-btn:hover {
+      background: var(--csp-ivory);
+      border-color: var(--csp-charcoal);
+      color: var(--csp-ember);
     }
 
     .global-search-container {
@@ -704,30 +733,147 @@ interface NavGroup {
       margin: 0 auto;
     }
 
+    /* Collapsed Sidebar Styles (Desktop) */
+    .staff-shell.sidebar-collapsed .staff-sidebar {
+      width: 68px;
+    }
+
+    .staff-shell.sidebar-collapsed .sidebar-header {
+      flex-direction: column;
+      padding: 0.85rem 0.25rem;
+      gap: 0.5rem;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .staff-shell.sidebar-collapsed .brand-link {
+      justify-content: center;
+      gap: 0;
+    }
+
+    .staff-shell.sidebar-collapsed .brand-titles {
+      display: none;
+    }
+
+    .staff-shell.sidebar-collapsed .collapse-toggle {
+      width: 28px;
+      height: 28px;
+      margin: 0 auto;
+    }
+
+    .staff-shell.sidebar-collapsed .sidebar-scroll {
+      padding: 0.75rem 0.35rem;
+      overflow-x: hidden;
+    }
+
+    .staff-shell.sidebar-collapsed .group-title-btn {
+      display: none;
+    }
+
+    .staff-shell.sidebar-collapsed .nav-group {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 0.35rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .staff-shell.sidebar-collapsed .nav-item-link {
+      justify-content: center;
+      padding: 0.55rem 0;
+      gap: 0;
+      border-radius: var(--csp-radius-sm);
+    }
+
+    .staff-shell.sidebar-collapsed .nav-item-text,
+    .staff-shell.sidebar-collapsed .nav-item-badge {
+      display: none;
+    }
+
+    .staff-shell.sidebar-collapsed .workspace-link {
+      justify-content: center;
+      padding: 0.55rem 0;
+    }
+
+    .staff-shell.sidebar-collapsed .sidebar-footer {
+      flex-direction: column;
+      padding: 0.75rem 0.25rem;
+      gap: 0.5rem;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .staff-shell.sidebar-collapsed .user-info {
+      display: none;
+    }
+
+    .staff-shell.sidebar-collapsed .user-chip {
+      justify-content: center;
+      gap: 0;
+    }
+
     /* Mobile Responsive */
     @media (max-width: 1024px) {
+      .collapse-toggle.desktop-toggle {
+        display: none !important;
+      }
+      .collapse-toggle.mobile-close {
+        display: flex !important;
+      }
+
       .staff-sidebar {
         position: fixed;
         left: -280px;
         top: 0;
         bottom: 0;
-        width: 280px;
+        width: 280px !important;
         transition: left 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        z-index: 1000;
       }
 
       .staff-sidebar.mobile-open {
         left: 0;
       }
 
-      .mobile-menu-btn {
-        display: block;
-      }
-
       .mobile-backdrop {
         position: fixed;
         inset: 0;
-        background: rgba(37, 35, 33, 0.5);
+        background: rgba(37, 35, 33, 0.6);
+        backdrop-filter: blur(2px);
         z-index: 999;
+      }
+
+      /* In mobile view, even if sidebar-collapsed was set on desktop, keep drawer layout */
+      .staff-shell.sidebar-collapsed .staff-sidebar {
+        width: 280px !important;
+      }
+      .staff-shell.sidebar-collapsed .sidebar-header {
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        padding: 1rem 1.25rem !important;
+      }
+      .staff-shell.sidebar-collapsed .brand-titles {
+        display: flex !important;
+      }
+      .staff-shell.sidebar-collapsed .group-title-btn {
+        display: flex !important;
+      }
+      .staff-shell.sidebar-collapsed .nav-item-link {
+        justify-content: flex-start !important;
+        padding: 0.5rem 0.75rem !important;
+        gap: 0.65rem !important;
+      }
+      .staff-shell.sidebar-collapsed .nav-item-text {
+        display: inline !important;
+      }
+      .staff-shell.sidebar-collapsed .nav-item-badge {
+        display: inline !important;
+      }
+      .staff-shell.sidebar-collapsed .sidebar-footer {
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        padding: 0.85rem 1rem !important;
+      }
+      .staff-shell.sidebar-collapsed .user-info {
+        display: flex !important;
       }
     }
   `]
@@ -849,6 +995,20 @@ export class StaffLayoutComponent {
       this.currentRouteName = 'Claim 360 Workspace';
     } else {
       this.currentRouteName = 'Operations Workspace';
+    }
+  }
+
+  @HostListener('window:keydown.escape')
+  onEscapeKey() {
+    this.closeMobileSidebar();
+    this.isNotifDropdownOpen = false;
+  }
+
+  onToggleSidebar() {
+    if (typeof window !== 'undefined' && window.innerWidth <= 1024) {
+      this.toggleMobileSidebar();
+    } else {
+      this.toggleSidebarCollapse();
     }
   }
 
